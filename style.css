@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+rect {
+  stroke: #000;
+  stroke-width: 0.5px;
+
+}
+
+.contractorclones {
+  stroke: #000;
+  stroke-width: 0px;
+
+}
+
+.check {
+    width: 50px;
+    height: 80px;
+    outline: 1px solid red;
+    position: relative;
+}
+
+p {
+  white-space: pre-wrap;
+}
+
+#active {
+  color: red;
+}
+
+.overlord_rect {
+	stroke-width: 0px;
+	filter: blur(0px);
+	transition: 0.4s filter linear;
+}
+
+div.svgdiv {
+	position : relative;
+	top : 20px;
+    left: 5px;
+}
+
+div.seldiv {
+    position: fixed;
+    top: 0;
+    left: 300px;
+    width: 1500px;
+    border: 0px solid #73AD21;
+}
