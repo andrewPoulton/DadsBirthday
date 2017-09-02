@@ -13,6 +13,7 @@ var swText = "It is a period of civil war. Rebel spaceships, striking from a hid
 
 $(function() {
     if(intro_switch < 0.5){
+        document.getElementsByTagName("body")[0].style = "black";
         starWars(swText.split(/\n/))
     }else{
         var twHTML = "".tagify("p",{id:'"maintext"'})
