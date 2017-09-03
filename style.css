@@ -38,14 +38,14 @@ p#maintext {
 }
 
 #intro {
-    padding: 100px;
-    margin: 50px;
-    text-align: justify;
-    justify-content: flex-end;
+    background-color: black;
 }
 
 #intro2 {
-
+        padding: 100px;
+        margin: 50px;
+        text-align: justify;
+        justify-content: flex-end;
 }
 
  /*#tasks {
@@ -71,6 +71,34 @@ div#tasks {
   height: 100%;
   background: #000;
   overflow: hidden;
+}
+
+rect.todo{
+    filter: url(#drop-shadow);
+    fill: steelblue;
+    stroke-width: 2px;
+}
+
+rect.empty{
+    filter: url(#drop-shadow);
+    fill: white;
+    stroke-width: 2px;
+}
+
+rect.done{
+    filter: url(#drop-shadow);
+    fill: #22ac16;
+    stroke-width: 2px;
+}
+
+rect.in_progress{
+    filter: url(#drop-shadow);
+    fill: coral;
+    stroke-width: 2px;
+}
+
+#sw_audio{
+    visibility: hidden;
 }
 
 .fade {

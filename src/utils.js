@@ -29,11 +29,11 @@ function starWars(text){
 	swHTML = swHTML.tagify("div", crawl)
 	swHTML = swHTML.tagify("section", sw)
 
-	d3.select("body")
+	d3.select("#intro")
 		.append("div")
 		.attr("class", "fade")
 
-	$("body").append(swHTML)
+	$("#intro").append(swHTML)
 	d3.select(".crawl")
 		.selectAll(".text")
 		.data(text, function(d, i){return d;})
@@ -41,5 +41,23 @@ function starWars(text){
 		.append("p")
 		.attr("class", "text")
 		.text(function(d){return d;})
+		sw_audio.play()
+		setTimeout(function(){
+			sw_audio.pause()
+		},  10000)
+}
+
+function addTasks(){
+	d3.selectAll("div").remove()
+	var task_div = d3.select("body")
+	.append("div")
+	.attr("id","tasks_div")
+
+
 
 }
+
+
+// $.getJSON('//freegeoip.net/json/?callback=?', function(data) {
+//   console.log(JSON.stringify(data, null, 2));
+// });
