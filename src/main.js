@@ -1,19 +1,35 @@
 var intro_switch = Math.random()
 var empty_tasks = d3.range(27)
                     .map(function(x){
-                        return {chosen_by: "empty",
-                                task: "Choose a task for John to do. Be as creative as possible!",
+                        return {chosen_by: 'tbc',
+                                task: "Click here and choose a task for John to do. Be as creative as possible!",
                                 done: "no"}
                     })
-var text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ante enim, viverra at placerat eu, molestie nec magna. Mauris in tristique est, mattis venenatis leo. Duis imperdiet, nulla vitae lacinia facilisis, neque tellus tempor tortor, ut pellentesque massa ex lacinia nunc. Nam dapibus pellentesque leo, vel venenatis odio. Vestibulum ut suscipit nibh. Maecenas tristique dictum rhoncus. Mauris dignissim scelerisque lorem, id bibendum neque finibus in. Mauris tristique nunc non feugiat tristique. Nam mattis felis a est dignissim, eu lacinia ligula hendrerit.\nCurabitur euismod, nisi vel mollis gravida, velit libero rhoncus purus, vel iaculis libero velit et massa. Nulla facilisi. Morbi eros quam, cursus vel dolor sed, laoreet porttitor nulla. Ut at dolor hendrerit, maximus metus eu, auctor tortor. Duis porttitor sit amet libero vitae consequat. Mauris id lacus vel magna ultrices dictum. Mauris tristique aliquet ipsum, id dapibus quam posuere sed. Praesent et sem turpis."
-
-text = text.replace(/\n/g, '\n\n')
-const text_split = text.split("")
+const pics = ["dad1", "dad2", "dad_married", "dad_stern"]
+var task_selected = false
 // var sp_text = text_split.map(function(x, index){return x.tagify({id:"spanned"+index})}).join("")
 // d3.select("#maintext").html(text)
 const user = $.getJSON('https://ipapi.co/json/', function(data) {
   console.log(JSON.stringify(data, null, 2));
 });
+
+const w = $(window).width();
+const h = $(window).height();
+
+var grid_width = (w/8 + 20)*6,
+    grid_margin = (w - grid_width)/2
+
+var all_tasks = tasks.concat(empty_tasks)
+    .map(function(x,i){
+        // debugger
+        x.x = grid_margin + 20*(i%6) + (i % 6)*w/8
+        x.y = 20*(Math.floor(i/6) +1) + Math.floor(i/6)*h/8
+        x.tx = w/16 + grid_margin + 20*(i%6) + (i % 6)*w/8
+        x.ty = 50 + 20*(Math.floor(i/6) +1) + Math.floor(i/6)*h/8
+        return x
+    })
+
+var scroll_colour = d3.scaleLinear().domain([0, 1]).range(["red", "green"]);
 
 var introText = "In the year of our lord 1957, on the ninth day of the ninth month, "
 
@@ -21,12 +37,44 @@ var lla = "A long time ago"
 var lla2 = "(like, literally aaaages ago)"
 var lla3 = ",\nnot particulary far away..."
 
-var swText = "It is a period of civil war. Rebel spaceships, striking from a hidden base, have won their first victory against the evil Galactic Empire.\nDuring the battle, Rebel spies managed to steal secret plans to the Empire’s ultimate weapon, the DEATH STAR, an armored space station with enough power to destroy an entire planet.\nPursued by the Empire’s sinister agents, Princess Leia races home aboard her starship, custodian of the stolen plans that can save her people and restore freedom to the galaxy…"
+var swText = "He's only gone and bloody done it. The big man's hit the big 6-0.  Evidently the dividends of his strict five-a-day habit (a beer, two whiskeys, another beer, and some ice cream), today's hero looks no worse than he did 30, nay 40 years ago.\nPutting aside the majesty of this acheivement, it has been decided by higher powers (Sandy) that JP is short of exactly 60 things to do in his 61st year.  His beloved family have drawn up a list of 33 things they couldn't be arsed to do themselves, but now need your help.\n \n \n \nI have a feeling that the actual scrolling text in Star Wars films has three paragraphs, so here's another."
+
+var task_text = "Click on a task to see what JP gets to do.  If a task is TBC, then it is up for grabs. Feel free to suggest a challenge, be creative!"
+
+var dem_rulez_dem = "Jk, obvs there are rules.\n\n\tRule 1) Do not talk about fight club.\n\n\tRule 2) JP may veto any challenge if he is too much of a wuss to do it.\n\n\tRule 3) His family is afforded 3 collective 'supervetoes' that override any veto.\n\tThese must be agreed upon unanimously, and bribes are not only permitted but actively encouraged."
+
+
+// setTimeout(function(){
+//     var hc = user.responseJSON.ip.hashCode()
+//     if (hc == 1875569125){
+//         window.alert("Hi Robyn! I hope you're having a nice holiday and thanks for helping me!")
+//     }
+//     },1000)
+var checker;
+
+function detectmob() {
+   if(window.innerWidth <= 800 && window.innerHeight <= 600) {
+     return true;
+   } else {
+     return false;
+   }
+}
 
 $(function() {
-    if(intro_switch < 0.5){
+    if(detectmob()){
+        alert("It looks like you're using a mobile device.  That, or you have an odd resolution I haven't catered for because of apathy. You're going to have a bad time, but then you've already made that choice, haven't you?")
+    }
+
+    if(intro_switch < 1.5){
         // document.getElementsByTagName("body")[0].style = "black";
         starWars(swText.split(/\n/))
+        checker = setInterval(function(){
+            var pos = tcheck.getBoundingClientRect()
+            console.log(pos.bottom)
+            if(pos.bottom > 5000){
+                addRules()
+            }
+        }, 400)
     }else{
         d3.select("#intro").remove()
         var twHTML = "".tagify("p",{id:'"maintext"'})
@@ -37,70 +85,3 @@ $(function() {
         showText("#maintext", text, 0 , 10);
     }
 });
-
-
-// d3.js drop shadow example
-// put together by http://charlbotha.com/
-
-var items = [
-    {x : 50, y : 10},
-    {x : 100, y: 170},
-    {x : 320, y: 70}
-];
-
-// we can increase this, everything will scale up with us
-var w=960,h=500,
-    svg=d3.select("#chart")
-        .append("svg")
-        .attr("width",w)
-        .attr("height",h);
-
-// filter chain comes from:
-// https://github.com/wbzyl/d3-notes/blob/master/hello-drop-shadow.html
-// cpbotha added explanatory comments
-// read more about SVG filter effects here: http://www.w3.org/TR/SVG/filters.html
-
-// filters go in defs element
-var defs = svg.append("defs");
-
-// create filter with id #drop-shadow
-// height=130% so that the shadow is not clipped
-var filter = defs.append("filter")
-    .attr("id", "drop-shadow")
-    .attr("height", "130%");
-
-// SourceAlpha refers to opacity of graphic that this filter will be applied to
-// convolve that with a Gaussian with standard deviation 3 and store result
-// in blur
-filter.append("feGaussianBlur")
-    .attr("in", "SourceAlpha")
-    .attr("stdDeviation", 5)
-    .attr("result", "blur");
-
-// translate output of Gaussian blur to the right and downwards with 2px
-// store result in offsetBlur
-filter.append("feOffset")
-    .attr("in", "blur")
-    .attr("dx", 5)
-    .attr("dy", 5)
-    .attr("result", "offsetBlur");
-
-// overlay original SourceGraphic over translated blurred opacity by using
-// feMerge filter. Order of specifying inputs is important!
-var feMerge = filter.append("feMerge");
-
-feMerge.append("feMergeNode")
-    .attr("in", "offsetBlur")
-feMerge.append("feMergeNode")
-    .attr("in", "SourceGraphic");
-
-// for each rendered node, apply #drop-shadow filter
-// var item = svg.selectAll("rect")
-//     .data(items)
-//   .enter().append("rect")
-//     .attr("width", 170)
-//     .attr("height", 100)
-//     .attr("fill", "steelblue")
-//     .attr("stroke-width", 2)
-//     .style("filter", "url(#drop-shadow)")
-//     .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
